@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_language_id/google_mlkit_language_id.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 
 void main() {
@@ -21,11 +22,13 @@ class _MyHomePageState extends State<MyHomePage> {
   dynamic onDeviceTranslator;
   // String from = lang[11];
   // String to = lang[13];
+  dynamic languageIdentifier;
 
   @override
   void initState() {
     super.initState();
     modelManager = OnDeviceTranslatorModelManager();
+    languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.6);
     checkAndDownloadModel();
   }
 
@@ -63,6 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       result = 'Model Not Downloaded. Please Download the Model First.';
     }
+    identifyLanguage(text);
+  }
+
+  identifyLanguage(String text) async {
+    final String response = await languageIdentifier.identifyLanguage(text);
+    textEditingController.text += '($response)';
   }
 
   @override
@@ -179,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       textStyle: const TextStyle(color: Colors.white),
-                      primary: Colors.green,
+                      backgroundColor: Colors.green,
                       shadowColor: Colors.grey,
                     ),
                     child: const Text('Translate'),
